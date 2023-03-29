@@ -1,34 +1,24 @@
-import { useDispatch, useSelector } from 'react-redux'
-import { Button, Box, Grid, Typography } from '@mui/material'
-
-import { decrement, increment } from './features/counter/counterSlice'
-import { RootState } from './store'
+import SignIn from './components/SignIn/SignIn'
 import './App.css'
-
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import HomePage from './components/Home/HomePage'
+import UserDashboard from './components/UserDashboard/UserDashboard'
+import BookDetail from './components/BookDetail/BookDetail'
+import UserCart from './components/UserCart/UserCart'
+import Dashboard from './components/AdminPanel/Dashboard'
 function App() {
-  const count = useSelector((state: RootState) => state.counter.value)
-  const dispatch = useDispatch()
-
   return (
     <div className="App">
-      <h1>Vite + React + Toolkit + MUI</h1>
-      <Box sx={{ width: '100%' }}>
-        <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-          <Grid item xs={5}>
-            <Button variant="contained" onClick={() => dispatch(increment())}>
-              Increment
-            </Button>
-          </Grid>
-          <Grid item xs={2}>
-            <Typography>{count}</Typography>
-          </Grid>
-          <Grid item xs={5}>
-            <Button variant="contained" onClick={() => dispatch(decrement())}>
-              Decrement
-            </Button>
-          </Grid>
-        </Grid>
-      </Box>
+      <Router>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/signin" element={<SignIn />} />
+          <Route path="/dashboard" element={<UserDashboard />} />
+          <Route path="/books/:id" element={<BookDetail />} />
+          <Route path="/admin-panel" element={<Dashboard />} />
+          <Route path="/user-cart" element={<UserCart />} />
+        </Routes>
+      </Router>
     </div>
   )
 }

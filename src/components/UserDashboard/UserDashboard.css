@@ -1,0 +1,11 @@
+.card {
+  padding: 2em;
+}
+.search-box {
+  margin-top: 1em;
+}
+.pagination {
+  display: block;
+  justify-content: center;
+  display: flex;
+}

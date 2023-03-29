@@ -1,0 +1,23 @@
+.list-detail {
+  align-items: center;
+}
+
+.alert-info {
+  max-width: 50%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 15%;
+  display: flex;
+  justify-content: center;
+  height: 100px;
+  align-items: center;
+}
+.container {
+  justify-content: center;
+  flex-direction: column;
+}
+.paper {
+  /* border-bottom: 2px #8080807d solid; */
+  width: 700px;
+  margin-bottom: 2%;
+}

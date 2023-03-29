@@ -1,0 +1,23 @@
+[
+  {
+    "username": "user1",
+    "password": "password1",
+    "type": "user",
+    "id": "1",
+    "borrowedBooks": null
+  },
+  {
+    "username": "user2",
+    "password": "password2",
+    "type": "admin",
+    "id": "2",
+    "borrowedBooks": null
+  },
+  {
+    "username": "user3",
+    "password": "password3",
+    "type": "user",
+    "id": "3",
+    "borrowedBooks": null
+  }
+]
