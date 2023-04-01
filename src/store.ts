@@ -5,7 +5,7 @@ import bookReducer from './features/books/bookSlice'
 import cartReducer from './features/cart/cartSlice'
 export const store = configureStore({
   reducer: {
-    signIn: signInReducer,
+    authentication: signInReducer,
     books: bookReducer,
     cart: cartReducer
   }

@@ -1,0 +1,9 @@
+.admintitle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.admintitle h2 {
+  margin-left: auto;
+  margin-right: auto;
+}

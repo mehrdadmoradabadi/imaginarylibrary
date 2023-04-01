@@ -1,27 +1,31 @@
 import { useState } from 'react'
 import { useSelector } from 'react-redux'
-import { useAppDispatch, RootState } from '../../store'
-import { login } from '../../features/authentication/authSlice'
 import { Navigate } from 'react-router-dom'
-import Avatar from '@mui/material/Avatar'
-import Button from '@mui/material/Button'
-import CssBaseline from '@mui/material/CssBaseline'
-import TextField from '@mui/material/TextField'
-import Link from '@mui/material/Link'
-import Grid from '@mui/material/Grid'
-import Box from '@mui/material/Box'
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
-import Typography from '@mui/material/Typography'
-import Container from '@mui/material/Container'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
-import { Alert } from '@mui/material'
+import {
+  Alert,
+  Button,
+  CssBaseline,
+  TextField,
+  Link,
+  Grid,
+  Box,
+  Avatar,
+  Container,
+  Typography
+} from '@mui/material'
+
+import { useAppDispatch, RootState } from '../../store'
+import { loginUsersThunk } from '../../features/authentication/authSlice'
+import { Role, User } from '../../features/types'
 
 function Copyright() {
   return (
     <Typography variant="body2" color="text.secondary" align="center" sx={{ mt: 8, mb: 4 }}>
       {'Copyright © '}
       <Link color="inherit" href="https://localhost/">
-        My library
+        Imaginary library
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -32,24 +36,33 @@ function Copyright() {
 const theme = createTheme()
 
 export default function SignIn() {
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
-  const error = useSelector((state: RootState) => state.signIn.error)
-  const isAuthenticated = useSelector((state: RootState) => state.signIn.isAuthenticated)
-  const userRole = useSelector((state: RootState) => state.signIn.type)
+  const [user, setUser] = useState<Partial<User> | undefined>()
+  const { error, isAuthenticated, role } = useSelector((state: RootState) => state.authentication)
   const dispatch = useAppDispatch()
-
-  if (isAuthenticated && userRole === 'user') {
+  if (isAuthenticated && role === Role.USER) {
     return <Navigate to="/dashboard" />
   }
-  if (isAuthenticated && userRole === 'admin') {
+  if (isAuthenticated && role === Role.ADMIN) {
     return <Navigate to="/admin-panel" />
   }
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    dispatch(login({ username, password }))
-  }
+    const newUser: User = {
+      username: user?.username ?? '',
+      password: user?.password ?? '',
+      isAuthenticated: false,
+      error: null,
+      type: null,
+      id: null,
+      borrowedBooks: null
+    }
 
+    dispatch(loginUsersThunk(newUser))
+  }
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target
+    setUser((prev) => ({ ...prev, [name]: value }))
+  }
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
@@ -77,7 +90,8 @@ export default function SignIn() {
               label="Username"
               name="username"
               autoFocus
-              onChange={(e) => setUsername(e.target.value)}
+              onChange={handleChange}
+              // onChange={(e) => setUsername(e.target.value)}
             />
             <TextField
               margin="normal"
@@ -88,7 +102,7 @@ export default function SignIn() {
               type="password"
               id="password"
               autoComplete="current-password"
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={handleChange}
             />
             <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
               Sign In

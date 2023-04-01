@@ -1,21 +1,32 @@
-import { Navigate } from 'react-router-dom'
-import Card from '@mui/material/Card'
-import CardContent from '@mui/material/CardContent'
-import CardMedia from '@mui/material/CardMedia'
-import Typography from '@mui/material/Typography'
-import { Box, Button, CardActionArea, CardActions, Grid, Link, Pagination } from '@mui/material'
+import {
+  Card,
+  CardContent,
+  CardMedia,
+  Typography,
+  InputBase,
+  Toolbar,
+  styled,
+  alpha,
+  Box,
+  Button,
+  CardActionArea,
+  CardActions,
+  Grid,
+  Link,
+  Pagination
+} from '@mui/material'
 import SearchIcon from '@mui/icons-material/Search'
-import { styled, alpha } from '@mui/material/styles'
-import InputBase from '@mui/material/InputBase'
-import './UserDashboard.css'
+
 import { useState } from 'react'
-import Header from '../Home/Header'
-import Toolbar from '@mui/material/Toolbar'
 import React, { useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { fetchBooksThunk } from '../../features/books/bookSlice'
+import { Navigate } from 'react-router-dom'
+
+import { fetchBooksThunk, filterBookThunk } from '../../features/books/bookSlice'
 import { RootState, useAppDispatch } from '../../store'
+import Header from '../Home/Header'
 import Footer from '../Home/Footer'
+import './UserDashboard.css'
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -63,22 +74,20 @@ export default function UserDashboard() {
   const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true'
   const [searchQuery, setSearchQuery] = useState('')
   const [page, setPage] = useState(1)
-  const { books, total } = useSelector((state: RootState) => state.books)
+  const { books, error } = useSelector((state: RootState) => state.books)
   useEffect(() => {
-    dispatch(fetchBooksThunk())
-  }, [])
-  const filteredBooks = books.filter((book) => {
-    const titleMatch = book.title.toLowerCase().includes(searchQuery.toLowerCase())
-    const descriptionMatch = book.description.toLowerCase().includes(searchQuery.toLowerCase())
-
-    return titleMatch || descriptionMatch
-  })
+    if (searchQuery) {
+      dispatch(filterBookThunk(searchQuery))
+    } else {
+      dispatch(fetchBooksThunk())
+    }
+  }, [dispatch, searchQuery])
 
   let skip = (page - 1) * 9
   const end = skip + 9 - 1
-  const booklist = filteredBooks.slice(skip, end)
+  const booklist = books.slice(skip, end)
 
-  if (end > filteredBooks.length) {
+  if (end > books.length) {
     skip -= 1
   }
 
@@ -111,6 +120,7 @@ export default function UserDashboard() {
       </Toolbar>
 
       <Box className="search-box"></Box>
+      {error && <p>{error}</p>}
       <Grid container spacing={2} className="card">
         {booklist.map((bookChild) => (
           <Grid item xs={8} sm={3} md={3} key={bookChild.isbn}>
@@ -148,7 +158,7 @@ export default function UserDashboard() {
       </Grid>
       <Pagination
         className="pagination"
-        count={Math.floor(total / 9) + 1}
+        count={Math.floor(books.length / 9) + 1}
         onChange={(e, value) => {
           setPage(value)
           window.scrollTo(0, 0)

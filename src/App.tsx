@@ -1,11 +1,13 @@
-import SignIn from './components/SignIn/SignIn'
-import './App.css'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+
+import SignIn from './components/SignIn/SignIn'
 import HomePage from './components/Home/HomePage'
 import UserDashboard from './components/UserDashboard/UserDashboard'
 import BookDetail from './components/BookDetail/BookDetail'
 import UserCart from './components/UserCart/UserCart'
 import Dashboard from './components/AdminPanel/Dashboard'
+import './App.css'
+
 function App() {
   return (
     <div className="App">

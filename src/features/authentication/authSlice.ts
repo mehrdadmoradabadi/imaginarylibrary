@@ -1,71 +1,89 @@
-import { createSlice } from '@reduxjs/toolkit'
-import type { PayloadAction } from '@reduxjs/toolkit'
-import users from '../../../public/users.json'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { User, Role } from '../types'
 
-export interface AuthState {
+export interface AllUsersState {
+  users: User[]
+  error: null | string
   username: string | null
   isAuthenticated: boolean
-  error: string | null
-  type: string | null
+  role: Role | null
+  borrowedBook: string[] | null
   id: string | null
-  borrowedBooks: string[] | null
 }
-export interface AllUsersState {
-  users: AuthState[]
-}
-const initialState: AuthState = {
-  username: null,
-  isAuthenticated: false,
+const initialState: AllUsersState = {
+  users: [],
   error: null,
-  type: null,
-  id: null,
-  borrowedBooks: null
+  username: '',
+  isAuthenticated: false,
+  role: Role.USER,
+  borrowedBook: [],
+  id: null
 }
-export const fetchusers = async (): Promise<{ users: AuthState[] }> => {
+
+export const logoutUserThunk = createAsyncThunk('user/logout', async () => {
+  return {}
+})
+export const loginUsersThunk = createAsyncThunk('users/fetch', async (propUser: User) => {
   const userResponse = await fetch('/users.json')
   const users = await userResponse.json()
-  return { users: users }
-}
+  const foundUser = users.find(
+    (user: User) => user.username === propUser.username && user.password === propUser.password
+  )
+  if (foundUser) {
+    return {
+      username: foundUser.username,
+      role: foundUser.type,
+      borrowedBooks: foundUser.borrowedBook,
+      error: null,
+      isAuthenticated: true,
+      id: foundUser.id
+    }
+  }
+  return {
+    username: null,
+    error: 'Wrong Username or Password!',
+    isAuthenticated: false
+  }
+})
 
 export const authSlice = createSlice({
   name: 'user',
   initialState,
-  reducers: {
-    login: (state, action: PayloadAction<{ username: string; password: string }>) => {
-      const { username, password } = action.payload
-      const foundUser = users.find(
-        (user) => user.username === username && user.password === password
+  reducers: {},
+  extraReducers: (builder) => {
+    builder.addCase(loginUsersThunk.fulfilled, (state, action) => {
+      state.error = action.payload.error
+      state.username = action.payload.username
+      state.isAuthenticated = action.payload.isAuthenticated
+      state.role = action.payload.role
+      state.id = action.payload.id
+      localStorage.setItem('isAuthenticated', action.payload.isAuthenticated ? 'true' : 'false')
+      localStorage.setItem('role', action.payload.role)
+      localStorage.setItem(
+        'borrowedBooks',
+        action.payload.borrowedBooks === null || action.payload.borrowedBooks === undefined
+          ? '[]'
+          : JSON.stringify(action.payload.borrowedBooks)
       )
-      if (foundUser) {
-        state.error = null
-        state.username = username
-        state.isAuthenticated = true
-        state.type = foundUser.type
-        state.id = foundUser.id
-        state.borrowedBooks = foundUser.borrowedBooks
-        localStorage.setItem('user', JSON.stringify(action.payload.username))
-        localStorage.setItem('userid', JSON.stringify(foundUser.id))
-        localStorage.setItem('userBorrowedBooks', JSON.stringify(foundUser.borrowedBooks))
-        localStorage.setItem('isAuthenticated', 'true')
-      } else {
-        state.error = 'Invalid username or password. Try again!'
-        state.username = null
-        state.isAuthenticated = false
-      }
-    },
-    logout: (state) => {
+      localStorage.setItem('id', action.payload.id)
+    })
+    builder.addCase(loginUsersThunk.rejected, (state) => {
+      state.error = 'something went wrong'
+    })
+    builder.addCase(logoutUserThunk.fulfilled, (state) => {
       state.error = null
       state.username = null
       state.isAuthenticated = false
-      state.id = null
-      state.borrowedBooks = []
-      localStorage.removeItem('user')
+      state.role = null
       localStorage.removeItem('isAuthenticated')
-      localStorage.removeItem('userid')
-      localStorage.removeItem('userBorrowedBooks')
-    }
+      localStorage.removeItem('role')
+      localStorage.removeItem('borrowedBooks')
+      localStorage.removeItem('id')
+    })
+    builder.addCase(logoutUserThunk.rejected, (state) => {
+      state.error = 'something went wrong'
+    })
   }
 })
 
-export const { login, logout } = authSlice.actions
 export default authSlice.reducer

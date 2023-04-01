@@ -7,7 +7,7 @@ import NotificationsIcon from '@mui/icons-material/Notifications'
 import Books from './AdminBooks'
 import { Button } from '@mui/material'
 import { useAppDispatch } from '../../store'
-import { logout } from '../../features/authentication/authSlice'
+import { logoutUserThunk } from '../../features/authentication/authSlice'
 import {
   ListItemButton,
   ListItemIcon,
@@ -31,7 +31,6 @@ import {
 import DashboardIcon from '@mui/icons-material/Dashboard'
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'
 import PeopleIcon from '@mui/icons-material/People'
-import AlertDialogSlide from './SlideInForm'
 
 function Copyright() {
   return (
@@ -43,13 +42,6 @@ function Copyright() {
       {new Date().getFullYear()}
       {'.'}
     </Typography>
-  )
-}
-function onClickHandler() {
-  return (
-    <>
-      <AlertDialogSlide />
-    </>
   )
 }
 const drawerWidth = 240
@@ -110,6 +102,7 @@ function DashboardContent() {
     setOpen(!open)
   }
   const dispatch = useAppDispatch()
+
   return (
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: 'flex' }}>
@@ -117,7 +110,8 @@ function DashboardContent() {
         <AppBar position="absolute" open={open}>
           <Toolbar
             sx={{
-              pr: '24px'
+              pr: '24px',
+              backgroundColor: 'gray'
             }}>
             <IconButton
               edge="start"
@@ -135,7 +129,7 @@ function DashboardContent() {
             </Typography>
             <Button
               variant="text"
-              onClick={() => dispatch(logout())}
+              onClick={() => dispatch(logoutUserThunk())}
               href={'/'}
               size="small"
               sx={{ color: 'white' }}
@@ -174,7 +168,7 @@ function DashboardContent() {
                 <ListItemIcon>
                   <ShoppingCartIcon />
                 </ListItemIcon>
-                <ListItemText primary="Borrowed books" onClick={onClickHandler} />
+                <ListItemText primary="Borrowed books" />
               </ListItemButton>
               <ListItemButton>
                 <ListItemIcon>

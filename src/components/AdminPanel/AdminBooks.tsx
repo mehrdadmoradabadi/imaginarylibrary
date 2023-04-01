@@ -1,27 +1,32 @@
 import * as React from 'react'
-import Link from '@mui/material/Link'
-import Table from '@mui/material/Table'
-import TableBody from '@mui/material/TableBody'
-import TableCell from '@mui/material/TableCell'
-import TableHead from '@mui/material/TableHead'
-import TableRow from '@mui/material/TableRow'
+import { Link, Table, TableBody, TableCell, TableHead, TableRow, IconButton } from '@mui/material'
 import Title from './Title'
 import { RootState, useAppDispatch } from '../../store'
 import { useSelector } from 'react-redux'
-import { useEffect } from 'react'
-import { fetchBooksThunk } from '../../features/books/bookSlice'
+import { useEffect, useState } from 'react'
+import { fetchBooksThunk, delBookThunk } from '../../features/books/bookSlice'
+import { UpdateBookForm } from './Forms/UpdateBookForm'
+import AddCircleIcon from '@mui/icons-material/AddCircle'
+import UpdateIcon from '@mui/icons-material/Update'
+import DeleteIcon from '@mui/icons-material/Delete'
+import NewBookForm from './Forms/NewBookForm'
 
+import './AdminBooks.css'
 function preventDefault(event: React.MouseEvent) {
   event.preventDefault()
 }
 
 export default function Books() {
   const [sortedBy, setSortedBy] = React.useState('lastBorrowerId')
+  const { books } = useSelector((state: RootState) => state.books)
+  const [updatedBookIsbn, setUpdatedBookIsbn] = useState<string | null>(null)
+  const bookToBeUpdated = books.find((book) => book.isbn === updatedBookIsbn)
+  const [addNewBook, setAddNewBook] = useState(false)
   const dispatch = useAppDispatch()
   useEffect(() => {
     dispatch(fetchBooksThunk())
   }, [])
-  const { books } = useSelector((state: RootState) => state.books)
+
   let sortedBooks = books
   if (sortedBy === 'title') {
     sortedBooks = [...books].sort((a, b) => a.title.localeCompare(b.title))
@@ -39,9 +44,22 @@ export default function Books() {
     })
   }
 
+  const handleUpdateBook = (isbn: string) => {
+    setUpdatedBookIsbn(isbn)
+  }
+  const handleAddNewBook = () => {
+    setAddNewBook((prev) => !prev)
+  }
   return (
     <React.Fragment>
-      <Title>All Books</Title>
+      <div className="admintitle">
+        <IconButton sx={{ color: 'green' }} onClick={() => handleAddNewBook()}>
+          <AddCircleIcon fontSize="large" />
+        </IconButton>
+        <Title>All Books</Title>
+      </div>
+      {addNewBook ? <NewBookForm /> : null}
+      {bookToBeUpdated ? <UpdateBookForm book={bookToBeUpdated} /> : null}
       <Table size="small">
         <TableHead>
           <TableRow>
@@ -54,9 +72,7 @@ export default function Books() {
             <TableCell onClick={() => setSortedBy('isbn')} sx={{ cursor: 'pointer' }}>
               ISBN
             </TableCell>
-            <TableCell onClick={() => setSortedBy('lastBorrowerId')} sx={{ cursor: 'pointer' }}>
-              Last Borrower ID
-            </TableCell>
+            <TableCell>Operation</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -65,7 +81,14 @@ export default function Books() {
               <TableCell>{book.title}</TableCell>
               <TableCell>{book.authors}</TableCell>
               <TableCell>{book.isbn}</TableCell>
-              <TableCell>{book.borrowerId}</TableCell>
+              <TableCell sx={{ display: 'flex' }}>
+                <IconButton sx={{ color: 'goldenrod' }} onClick={() => handleUpdateBook(book.isbn)}>
+                  <UpdateIcon />
+                </IconButton>
+                <IconButton sx={{ color: 'red' }} onClick={() => dispatch(delBookThunk(book.isbn))}>
+                  <DeleteIcon />
+                </IconButton>
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>

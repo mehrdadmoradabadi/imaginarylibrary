@@ -3,14 +3,7 @@ import { ListItemButton, ListItemIcon, ListItemText } from '@mui/material/'
 import DashboardIcon from '@mui/icons-material/Dashboard'
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'
 import PeopleIcon from '@mui/icons-material/People'
-import AlertDialogSlide from './SlideInForm'
-function onClickHandler() {
-  return (
-    <>
-      <AlertDialogSlide />
-    </>
-  )
-}
+
 export const MainListItems = (
   <React.Fragment>
     <ListItemButton>
@@ -23,7 +16,7 @@ export const MainListItems = (
       <ListItemIcon>
         <ShoppingCartIcon />
       </ListItemIcon>
-      <ListItemText primary="Borrowed books" onClick={onClickHandler} />
+      <ListItemText primary="Borrowed books" />
     </ListItemButton>
     <ListItemButton>
       <ListItemIcon>

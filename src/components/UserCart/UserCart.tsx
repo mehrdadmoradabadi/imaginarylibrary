@@ -1,4 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
+import { useSelector } from 'react-redux'
+
 import {
   Alert,
   Box,
@@ -13,52 +15,29 @@ import {
   Paper
 } from '@mui/material'
 import { Delete as DeleteIcon } from '@mui/icons-material'
-import { Book } from '../../features/books/bookSlice'
+
 import './UserCart.css'
+import { fetchCartItemsThunk, removeFromCartThunk } from '../../features/cart/cartSlice'
+import { RootState, useAppDispatch } from '../../store'
 
 const UserCart = () => {
-  const [cartItems, setCartItems] = useState<Book[]>([])
-  const cartISBNs = JSON.parse(localStorage.userBorrowedBooks) || []
+  const { books, error, isbn } = useSelector((state: RootState) => state.cart)
+  const dispatch = useAppDispatch()
   useEffect(() => {
-    const data = localStorage.getItem('books')
-    if (data) {
-      const books: Book[] = JSON.parse(data)
-      const items = books.filter((book: Book) => cartISBNs.includes(book.isbn))
-      setCartItems(items)
-    }
+    dispatch(fetchCartItemsThunk())
   }, [])
 
   const handleDelete = (id: string) => {
-    const updatedCartIBNs = cartISBNs.filter((isbnItem: string) => isbnItem !== id)
-    localStorage.setItem('userBorrowedBooks', JSON.stringify(updatedCartIBNs))
-    if (updatedCartIBNs.length === 0) {
-      localStorage.setItem('userBorrowedBooks', '[]')
-    }
-    const updatedCartItems = cartItems.filter((item) => item.isbn !== id)
-    setCartItems(updatedCartItems)
-    const data = localStorage.getItem('books')
-    if (data) {
-      const date = new Date()
-      const formattedDate = date.toISOString().slice(0, 10)
-
-      const books: Book[] = JSON.parse(data)
-      const bookToUpdate = books.find((book) => book.isbn === id)
-      if (bookToUpdate) {
-        bookToUpdate.status = 'available'
-        bookToUpdate.borrowerId = null
-        bookToUpdate.returnDate = formattedDate
-        localStorage.setItem('books', JSON.stringify(books))
-      }
-    }
+    dispatch(removeFromCartThunk(id))
   }
-  console.log(cartItems)
   return (
     <Box sx={{ p: 2 }}>
       <Typography variant="h5">Library Cart</Typography>
-      {cartISBNs.length !== 0 ? (
+      {isbn.length !== 0 ? (
         <>
+          {error && { error }}
           <List className="container">
-            {cartItems.map((item) => (
+            {books?.map((item) => (
               <Paper key={item.isbn} className="paper">
                 <ListItem alignItems="center">
                   <ListItemAvatar>

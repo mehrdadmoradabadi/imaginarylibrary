@@ -6,7 +6,6 @@ import { createTheme, ThemeProvider } from '@mui/material/styles'
 import Header from './Header'
 import MainFeaturedPost from './MainFeaturedPost'
 import FeaturedPost from './FeaturedPost'
-import Main from './Main'
 import Footer from './Footer'
 
 const sections = [
@@ -43,11 +42,6 @@ const featuredPosts = [
     imageLabel: 'Brain-Boosting Benefits of Reading'
   }
 ]
-const post1 = 'post 1'
-const post2 = 'post 2'
-const post3 = 'post 3'
-
-const posts = [post1, post2, post3]
 
 const theme = createTheme()
 
@@ -63,9 +57,6 @@ export default function Blog() {
             {featuredPosts.map((post) => (
               <FeaturedPost key={post.title} post={post} />
             ))}
-          </Grid>
-          <Grid container spacing={5} sx={{ mt: 3 }}>
-            <Main title="From the firehose" posts={posts} />
           </Grid>
         </main>
       </Container>

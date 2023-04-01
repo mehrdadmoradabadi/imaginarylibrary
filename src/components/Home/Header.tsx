@@ -1,19 +1,14 @@
-import * as React from 'react'
-import Link from '@mui/material/Link'
-import { Badge, Button, IconButton, Toolbar, Typography } from '@mui/material'
-import { useEffect, useState } from 'react'
-import { logout } from '../../features/authentication/authSlice'
-import { useAppDispatch } from '../../store'
+import { Badge, Button, IconButton, Toolbar, Typography, Link } from '@mui/material'
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'
-import { useNavigate } from 'react-router-dom'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
-interface HeaderProps {
-  sections: ReadonlyArray<{
-    title: string
-    url: string
-  }>
-  title: string
-}
+
+import * as React from 'react'
+import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+
+import { logoutUserThunk } from '../../features/authentication/authSlice'
+import { useAppDispatch } from '../../store'
+import { HeaderProps } from '../../features/types'
 
 export default function Header(props: HeaderProps) {
   const { sections, title } = props
@@ -22,18 +17,16 @@ export default function Header(props: HeaderProps) {
     localStorage.getItem('isAuthenticated') === 'true'
   )
   const dispatch = useAppDispatch()
+  let borrowedBooks = JSON.parse(localStorage.getItem('borrowedBooks') || 'null')
 
-  let userBorrowedBooks = JSON.parse(localStorage.getItem('userBorrowedBooks') || 'null')
-
-  if (!userBorrowedBooks) {
-    userBorrowedBooks = []
+  if (!borrowedBooks) {
+    borrowedBooks = []
   }
   useEffect(() => {
-    const totalBorrowedBooks = userBorrowedBooks.length
-    setCartitems(totalBorrowedBooks)
-  }, [userBorrowedBooks])
+    setCartitems(borrowedBooks.length)
+  }, [borrowedBooks])
   function handleSignout() {
-    dispatch(logout())
+    dispatch(logoutUserThunk())
     setIsAuthenticated(false)
   }
   const navigate = useNavigate()

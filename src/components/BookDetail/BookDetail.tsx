@@ -1,63 +1,32 @@
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { Book } from '../../features/books/bookSlice'
+import { Book } from '../../features/types'
 import { Typography, Paper, Grid, Button } from '@material-ui/core'
+import { addToCartThunk } from '../../features/cart/cartSlice'
+import { useAppDispatch } from '../../store'
+
 import Header from '../Home/Header'
 import Footer from '../Home/Footer'
 import './BookDetail.css'
-import { addToCart } from '../../features/cart/cartSlice'
-import { useAppDispatch } from '../../store'
 
 export default function BookDetail() {
   const { id } = useParams<string>()
   const [isBorrowed, setisBorrowed] = useState<boolean>(false)
-  const [book, setBooks] = useState<Book | null>(null)
-  const userId = localStorage.getItem('userid')
   const dispatch = useAppDispatch()
-  let parsedUserId: number
-  if (userId) {
-    parsedUserId = JSON.parse(userId)
-  }
+  const data = localStorage.getItem('books')
+  const [book, setBook] = useState<Book | undefined>()
+  const books: Book[] = data ? JSON.parse(data) : null
+  const filteredBook = books.find((book: Book) => book.isbn === id)
   useEffect(() => {
-    const data = localStorage.getItem('books')
-    if (data) {
-      const books: Book[] = JSON.parse(data)
-      const filteredBooks = books.filter((book: Book) => book.isbn === id)
-      if (filteredBooks.length === 1) {
-        const book = filteredBooks[0]
-        if (book.status !== 'available' || localStorage.userBorrowedBooks.includes(book.title)) {
-          setisBorrowed(true)
-        }
-        setBooks(book)
-      }
-    }
+    setBook(filteredBook)
   }, [id, isBorrowed])
-
   if (!book) {
     return <div>Loading...</div>
   }
-
   function handleBorrow(bookISBN: string) {
-    const date = new Date()
-    const formattedDate = date.toISOString().slice(0, 10)
-
-    if (!localStorage.userBorrowedBooks.includes(bookISBN)) {
-      const updatedBooks = JSON.parse(localStorage.books).map((b: Book) => {
-        if (b.isbn === bookISBN) {
-          b.status = 'Borrowed'
-          b.borrowerId = parsedUserId.toString()
-          b.borrowDate = formattedDate
-        }
-        return b
-      })
-      setisBorrowed(true)
-      localStorage.setItem('books', JSON.stringify(updatedBooks))
-      if (book) {
-        dispatch(addToCart({ bookISBN }))
-      }
-    }
+    setisBorrowed(true)
+    dispatch(addToCartThunk(bookISBN))
   }
-
   return (
     <>
       <Header title="Imaginary Library" sections={[]} />
