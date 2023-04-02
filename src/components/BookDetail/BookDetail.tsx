@@ -30,9 +30,15 @@ export default function BookDetail() {
   return (
     <>
       <Header title="Imaginary Library" sections={[]} />
-      <Paper className="paper">
-        <Grid container className="grid">
-          <Grid item className="container">
+      <Paper sx={{ margin: '0', height: '100%', overflow: 'hidden' }}>
+        <Grid
+          container
+          className="grid"
+          sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+          <Grid
+            item
+            className="container"
+            sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start' }}>
             <img className="cover" alt={`${book.title} cover`} src="/book.jpg" />
             <div className="title">
               <Typography variant="h5" gutterBottom>
@@ -40,7 +46,15 @@ export default function BookDetail() {
               </Typography>
             </div>
           </Grid>
-          <Grid className="detail-container">
+          <Grid
+            className="detail-container"
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'flex-start',
+              marginTop: '5%',
+              marginLeft: '5%'
+            }}>
             <Typography variant="subtitle1" color="textSecondary" gutterBottom>
               Author: {book.authors}
             </Typography>
