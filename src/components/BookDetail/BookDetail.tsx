@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { Book } from '../../features/types'
-import { Typography, Paper, Grid, Button } from '@material-ui/core'
+import { Typography, Paper, Grid, Button } from '@mui/material/'
 import { addToCartThunk } from '../../features/cart/cartSlice'
 import { useAppDispatch } from '../../store'
 
