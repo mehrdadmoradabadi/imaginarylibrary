@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useSelector } from 'react-redux'
-import { Navigate } from 'react-router-dom'
+import { Navigate, Link } from 'react-router-dom'
+
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 import {
@@ -8,7 +9,6 @@ import {
   Button,
   CssBaseline,
   TextField,
-  Link,
   Grid,
   Box,
   Avatar,
@@ -24,7 +24,7 @@ function Copyright() {
   return (
     <Typography variant="body2" color="text.secondary" align="center" sx={{ mt: 8, mb: 4 }}>
       {'Copyright © '}
-      <Link color="inherit" href="https://localhost/">
+      <Link color="inherit" to="https://localhost/">
         Imaginary library
       </Link>{' '}
       {new Date().getFullYear()}
@@ -109,9 +109,7 @@ export default function SignIn() {
             </Button>
             <Grid container>
               <Grid item xs>
-                <Link href="#" variant="body2">
-                  Forgot password?
-                </Link>
+                <Link to="#">Forgot password?</Link>
               </Grid>
             </Grid>
           </Box>

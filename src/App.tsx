@@ -6,22 +6,60 @@ import UserDashboard from './components/UserDashboard/UserDashboard'
 import BookDetail from './components/BookDetail/BookDetail'
 import UserCart from './components/UserCart/UserCart'
 import Dashboard from './components/AdminPanel/Dashboard'
+import Layout from './components/Layout/Layout'
+import Category from './components/Category/Category'
 import './App.css'
 
 function App() {
   return (
-    <div className="App">
-      <Router>
+    <Router>
+      <div className="App">
         <Routes>
-          <Route path="/" element={<HomePage />} />
           <Route path="/signin" element={<SignIn />} />
-          <Route path="/dashboard" element={<UserDashboard />} />
-          <Route path="/books/:id" element={<BookDetail />} />
           <Route path="/admin-panel" element={<Dashboard />} />
-          <Route path="/user-cart" element={<UserCart />} />
+          <Route
+            path="/"
+            element={
+              <Layout>
+                <HomePage />
+              </Layout>
+            }
+          />
+          <Route
+            path="/dashboard"
+            element={
+              <Layout>
+                <UserDashboard />
+              </Layout>
+            }
+          />
+          <Route
+            path="/books/:id"
+            element={
+              <Layout>
+                <BookDetail />
+              </Layout>
+            }
+          />
+          <Route
+            path="/categories/:category"
+            element={
+              <Layout>
+                <Category />
+              </Layout>
+            }
+          />
+          <Route
+            path="/user-cart"
+            element={
+              <Layout>
+                <UserCart />
+              </Layout>
+            }
+          />
         </Routes>
-      </Router>
-    </div>
+      </div>
+    </Router>
   )
 }
 

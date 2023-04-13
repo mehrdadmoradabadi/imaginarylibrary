@@ -1,13 +1,8 @@
-import * as React from 'react'
 import MuiDrawer from '@mui/material/Drawer'
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar'
 import MenuIcon from '@mui/icons-material/Menu'
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 import NotificationsIcon from '@mui/icons-material/Notifications'
-import Books from './AdminBooks'
-import { Button } from '@mui/material'
-import { useAppDispatch } from '../../store'
-import { logoutUserThunk } from '../../features/authentication/authSlice'
 import {
   ListItemButton,
   ListItemIcon,
@@ -21,22 +16,28 @@ import {
   Container,
   Grid,
   Paper,
-  Link,
   CssBaseline,
   Box,
   styled,
   createTheme,
-  ThemeProvider
+  ThemeProvider,
+  Button
 } from '@mui/material/'
 import DashboardIcon from '@mui/icons-material/Dashboard'
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'
 import PeopleIcon from '@mui/icons-material/People'
 
+import * as React from 'react'
+import { Link } from 'react-router-dom'
+import Books from './Books/AdminBooks'
+import { useAppDispatch } from '../../store'
+import { logoutUserThunk } from '../../features/authentication/authSlice'
+
 function Copyright() {
   return (
     <Typography variant="body2" color="text.secondary" align="center" sx={{ pt: 4 }}>
       {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
+      <Link color="inherit" to="https://mui.com/">
         Your Website
       </Link>{' '}
       {new Date().getFullYear()}
@@ -130,7 +131,7 @@ function DashboardContent() {
             <Button
               variant="text"
               onClick={() => dispatch(logoutUserThunk())}
-              href={'/'}
+              to={'/'}
               size="small"
               sx={{ color: 'white' }}
               component={Link}>

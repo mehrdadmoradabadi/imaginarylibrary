@@ -60,8 +60,10 @@ export const cartSlice = createSlice({
       }
       state.isbn.push({ isbn: action.payload.isbn })
       const userBorrowedBooks = JSON.parse(localStorage.getItem('borrowedBooks') || '') || []
-      userBorrowedBooks.push(action.payload.isbn)
-      localStorage.setItem('borrowedBooks', JSON.stringify(userBorrowedBooks))
+      if (!userBorrowedBooks.includes(action.payload.isbn)) {
+        userBorrowedBooks.push(action.payload.isbn)
+        localStorage.setItem('borrowedBooks', JSON.stringify(userBorrowedBooks))
+      }
     })
     builder.addCase(addToCartThunk.rejected, (state) => {
       state.error = 'something went wrong'
@@ -71,7 +73,6 @@ export const cartSlice = createSlice({
       const isbnStrings = state.isbn
         .filter((item) => item.isbn !== action.payload.isbn)
         .map((item: Cart) => item.isbn)
-      console.log(isbnStrings)
       localStorage.setItem('borrowedBooks', JSON.stringify(isbnStrings))
       state.isbn = state.isbn.filter((item: Cart) => item.isbn !== action.payload.isbn)
     })

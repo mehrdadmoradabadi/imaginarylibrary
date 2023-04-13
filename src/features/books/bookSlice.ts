@@ -43,6 +43,17 @@ export const filterBookThunk = createAsyncThunk('books/filter', async (searchQue
     error: null
   }
 })
+export const categoryBookThunk = createAsyncThunk('books/category', async (searchQuery: string) => {
+  const books: Book[] = JSON.parse(localStorage.getItem('books') || '[]')
+  const filteredBooks = books.filter((book) => {
+    const category = book.genre.toLocaleLowerCase().includes(searchQuery.toLowerCase())
+    return category
+  })
+  return {
+    filteredBooks,
+    error: null
+  }
+})
 export const delBookThunk = createAsyncThunk('books/del', async (isbn: string) => {
   // const response = await fetch(`./books.json`)
   // const data = await response.json()
@@ -104,6 +115,12 @@ export const booksSlice = createSlice({
       state.books = action.payload.filteredBooks
     })
     builder.addCase(filterBookThunk.rejected, (state) => {
+      state.error = 'something went wrong'
+    })
+    builder.addCase(categoryBookThunk.fulfilled, (state, action) => {
+      state.books = action.payload.filteredBooks
+    })
+    builder.addCase(categoryBookThunk.rejected, (state) => {
       state.error = 'something went wrong'
     })
   }

@@ -1,21 +1,20 @@
-import { Badge, Button, IconButton, Toolbar, Typography, Link } from '@mui/material'
+import { Badge, Button, IconButton, Toolbar, Typography } from '@mui/material'
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 
 import * as React from 'react'
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 
 import { logoutUserThunk } from '../../features/authentication/authSlice'
-import { useAppDispatch } from '../../store'
+import { RootState, useAppDispatch } from '../../store'
 import { HeaderProps } from '../../features/types'
+import { useSelector } from 'react-redux'
 
 export default function Header(props: HeaderProps) {
   const { sections, title } = props
   const [cartitems, setCartitems] = useState<number>(0)
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(
-    localStorage.getItem('isAuthenticated') === 'true'
-  )
+  const isAuthenticated = useSelector((state: RootState) => state.authentication.isAuthenticated)
   const dispatch = useAppDispatch()
   let borrowedBooks = JSON.parse(localStorage.getItem('borrowedBooks') || 'null')
 
@@ -27,20 +26,19 @@ export default function Header(props: HeaderProps) {
   }, [borrowedBooks])
   function handleSignout() {
     dispatch(logoutUserThunk())
-    setIsAuthenticated(false)
   }
   const navigate = useNavigate()
 
   return (
     <React.Fragment>
       <Toolbar sx={{ borderBottom: 1, borderColor: 'divider' }}>
-        <IconButton onClick={() => navigate(-1)} color="inherit" sx={{ mr: 2 }}>
+        <IconButton onClick={() => navigate(-1)} sx={{ mr: 2, color: '#656363' }}>
           <ArrowBackIcon />
         </IconButton>
         <Typography
           component="h2"
           variant="h5"
-          color="inherit"
+          color="#656363"
           align="center"
           noWrap
           sx={{ flex: 1 }}>
@@ -49,7 +47,10 @@ export default function Header(props: HeaderProps) {
 
         {isAuthenticated ? (
           <React.Fragment>
-            <IconButton href="/user-cart" color="inherit" sx={{ marginRight: '2%' }}>
+            <IconButton
+              component={Link}
+              to="/user-cart"
+              sx={{ marginRight: '2%', color: '#656363' }}>
               <Badge badgeContent={cartitems} color="secondary">
                 <ShoppingCartIcon />
               </Badge>
@@ -57,7 +58,7 @@ export default function Header(props: HeaderProps) {
 
             <Button
               onClick={handleSignout}
-              href={'/'}
+              to={'/'}
               variant="outlined"
               size="small"
               component={Link}>
@@ -65,7 +66,7 @@ export default function Header(props: HeaderProps) {
             </Button>
           </React.Fragment>
         ) : (
-          <Button variant="outlined" size="small" component={Link} href={'/signin'}>
+          <Button variant="outlined" size="small" component={Link} to={'/signin'}>
             Sign in
           </Button>
         )}
@@ -76,12 +77,9 @@ export default function Header(props: HeaderProps) {
         sx={{ justifyContent: 'space-between', overflowX: 'auto' }}>
         {sections.map((section) => (
           <Link
-            color="inherit"
-            noWrap
+            style={{ color: '#656363', textDecoration: 'none' }}
             key={section.title}
-            variant="body2"
-            href={section.url}
-            sx={{ p: 1, flexShrink: 0 }}>
+            to={`/categories/${section.title.toLowerCase()}`}>
             {section.title}
           </Link>
         ))}

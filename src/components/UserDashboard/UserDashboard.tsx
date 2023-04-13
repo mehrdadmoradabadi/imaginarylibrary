@@ -8,24 +8,18 @@ import {
   styled,
   alpha,
   Box,
-  Button,
   CardActionArea,
-  CardActions,
   Grid,
-  Link,
   Pagination
 } from '@mui/material'
 import SearchIcon from '@mui/icons-material/Search'
 
-import { useState } from 'react'
-import React, { useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { Navigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 import { fetchBooksThunk, filterBookThunk } from '../../features/books/bookSlice'
 import { RootState, useAppDispatch } from '../../store'
-import Header from '../Home/Header'
-import Footer from '../Home/Footer'
 import './UserDashboard.css'
 
 const Search = styled('div')(({ theme }) => ({
@@ -71,7 +65,6 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 export default function UserDashboard() {
   const dispatch = useAppDispatch()
-  const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true'
   const [searchQuery, setSearchQuery] = useState('')
   const [page, setPage] = useState(1)
   const { books, error } = useSelector((state: RootState) => state.books)
@@ -91,21 +84,9 @@ export default function UserDashboard() {
     skip -= 1
   }
 
-  if (!isAuthenticated) {
-    return <Navigate to={'/'} />
-  }
   return (
     <>
-      <Header title="Imaginary Library" sections={[]} />
-      <Toolbar
-        component="nav"
-        variant="dense"
-        sx={{
-          justifyContent: 'space-between',
-          overflowX: 'auto',
-          borderTop: 1,
-          borderColor: 'divider'
-        }}>
+      <Toolbar component="nav" variant="dense" sx={{ backgroundColor: '#d8d8d8' }}>
         <Search>
           <SearchIconWrapper>
             <SearchIcon />
@@ -124,34 +105,34 @@ export default function UserDashboard() {
       <Grid container spacing={2} className="card">
         {booklist.map((bookChild) => (
           <Grid item xs={8} sm={3} md={3} key={bookChild.isbn}>
-            <Card>
+            <Card sx={{ height: '100%' }}>
               <CardActionArea>
-                <CardMedia
-                  component="img"
-                  height="100%"
-                  width="100%"
-                  image="/book.jpg"
-                  alt={bookChild.title}
-                />
-                <CardContent>
-                  <Typography gutterBottom variant="h5" component="div">
-                    {bookChild.title}
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    overflow={'ellipsis'}
-                    color="text.secondary"
-                    sx={{ whiteSpace: 'normal' }}>
-                    {bookChild.description}
-                  </Typography>
-                </CardContent>
-                <CardActions></CardActions>
+                <Link
+                  to={`/books${bookChild.url}`}
+                  style={{ textDecoration: 'none', color: 'black' }}>
+                  <CardMedia
+                    component="img"
+                    height="100%"
+                    width="100%"
+                    image="/book.jpg"
+                    alt={bookChild.title}
+                  />
+                  <CardContent>
+                    <Typography gutterBottom variant="h5" component="div">
+                      {bookChild.title}
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      overflow={'ellipsis'}
+                      color="text.secondary"
+                      sx={{ whiteSpace: 'normal' }}>
+                      {bookChild.description}
+                    </Typography>
+                  </CardContent>
+                  {/* <CardActions></CardActions> */}
+                  <Typography sx={{ color: '#5858a5' }}>Read More & Borrow</Typography>
+                </Link>
               </CardActionArea>
-              <Link href={`/books${bookChild.url}`}>
-                <Button size="small" color="primary">
-                  Read More & Borrow
-                </Button>
-              </Link>
             </Card>
           </Grid>
         ))}
@@ -163,10 +144,6 @@ export default function UserDashboard() {
           setPage(value)
           window.scrollTo(0, 0)
         }}
-      />
-      <Footer
-        title="Thank you"
-        description="Thank you for visiting the Imaginary Library! We hope you found what you were looking for and enjoyed your experience with us. Remember, the library is always here for you, whether you're looking for a good book to read, a virtual event to attend, or a friendly face to talk to. Keep exploring, keep learning, and keep reading!"
       />
     </>
   )

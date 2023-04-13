@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { useSelector } from 'react-redux'
+import { Link } from 'react-router-dom'
 
 import {
   Alert,
@@ -71,7 +72,7 @@ const UserCart = () => {
               </Paper>
             ))}
           </List>
-          <Button href={'/dashboard'} variant="outlined" size="small">
+          <Button component={Link} to={'/dashboard'} variant="outlined" size="small">
             Back to dashboard
           </Button>
         </>
@@ -80,7 +81,12 @@ const UserCart = () => {
           <Alert severity="info" className="alert-info">
             Your cart is EMPTY!
           </Alert>
-          <Button href={'/dashboard'} variant="outlined" size="small" sx={{ marginTop: '5%' }}>
+          <Button
+            component={Link}
+            to={'/dashboard'}
+            variant="outlined"
+            size="small"
+            sx={{ marginTop: '5%' }}>
             Back to dashboard
           </Button>
         </>

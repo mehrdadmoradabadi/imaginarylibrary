@@ -34,7 +34,6 @@ export interface Book {
 export interface HeaderProps {
   sections: ReadonlyArray<{
     title: string
-    url: string
   }>
   title: string
 }

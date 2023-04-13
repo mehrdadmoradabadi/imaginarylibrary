@@ -1,17 +1,20 @@
-import * as React from 'react'
-import { Link, Table, TableBody, TableCell, TableHead, TableRow, IconButton } from '@mui/material'
-import Title from './Title'
-import { RootState, useAppDispatch } from '../../store'
-import { useSelector } from 'react-redux'
-import { useEffect, useState } from 'react'
-import { fetchBooksThunk, delBookThunk } from '../../features/books/bookSlice'
-import { UpdateBookForm } from './Forms/UpdateBookForm'
+import { Table, TableBody, TableCell, TableHead, TableRow, IconButton } from '@mui/material'
 import AddCircleIcon from '@mui/icons-material/AddCircle'
 import UpdateIcon from '@mui/icons-material/Update'
 import DeleteIcon from '@mui/icons-material/Delete'
-import NewBookForm from './Forms/NewBookForm'
+
+import * as React from 'react'
+import { useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
+import { Link } from 'react-router-dom'
+import { RootState, useAppDispatch } from '../../../store'
+import { fetchBooksThunk, delBookThunk } from '../../../features/books/bookSlice'
+import { UpdateBookForm } from '../Forms/UpdateBookForm'
+import Title from '../Title/Title'
+import NewBookForm from '../Forms/NewBookForm'
 
 import './AdminBooks.css'
+
 function preventDefault(event: React.MouseEvent) {
   event.preventDefault()
 }
@@ -93,7 +96,7 @@ export default function Books() {
           ))}
         </TableBody>
       </Table>
-      <Link color="primary" href="#" onClick={preventDefault} sx={{ mt: 3 }}>
+      <Link color="primary" to="#" onClick={preventDefault}>
         See more Books
       </Link>
     </React.Fragment>

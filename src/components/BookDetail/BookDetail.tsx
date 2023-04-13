@@ -2,20 +2,20 @@ import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { Book } from '../../features/types'
 import { Typography, Paper, Grid, Button } from '@mui/material/'
-import { addToCartThunk } from '../../features/cart/cartSlice'
-import { useAppDispatch } from '../../store'
 
-import Header from '../Home/Header'
-import Footer from '../Home/Footer'
+import { addToCartThunk } from '../../features/cart/cartSlice'
+import { useAppDispatch, RootState } from '../../store'
+
 import './BookDetail.css'
+import { useSelector } from 'react-redux'
 
 export default function BookDetail() {
   const { id } = useParams<string>()
   const [isBorrowed, setisBorrowed] = useState<boolean>(false)
   const dispatch = useAppDispatch()
-  const data = localStorage.getItem('books')
+  const data = useSelector((state: RootState) => state.books)
   const [book, setBook] = useState<Book | undefined>()
-  const books: Book[] = data ? JSON.parse(data) : null
+  const books: Book[] = data.books
   const filteredBook = books.find((book: Book) => book.isbn === id)
   useEffect(() => {
     setBook(filteredBook)
@@ -29,7 +29,6 @@ export default function BookDetail() {
   }
   return (
     <>
-      <Header title="Imaginary Library" sections={[]} />
       <Paper sx={{ margin: '0', height: '100%', overflow: 'hidden' }}>
         <Grid
           container
@@ -83,10 +82,6 @@ export default function BookDetail() {
           </Grid>
         </Grid>
       </Paper>
-      <Footer
-        title="Thank you"
-        description="Thank you for visiting the Imaginary Library! We hope you found what you were looking for and enjoyed your experience with us. Remember, the library is always here for you, whether you're looking for a good book to read, a virtual event to attend, or a friendly face to talk to. Keep exploring, keep learning, and keep reading!"
-      />
     </>
   )
 }
