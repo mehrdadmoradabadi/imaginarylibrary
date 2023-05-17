@@ -3,10 +3,8 @@ import AddCircleIcon from '@mui/icons-material/AddCircle'
 import UpdateIcon from '@mui/icons-material/Update'
 import DeleteIcon from '@mui/icons-material/Delete'
 
-import * as React from 'react'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Fragment } from 'react'
 import { useSelector } from 'react-redux'
-import { Link } from 'react-router-dom'
 import { RootState, useAppDispatch } from '../../../store'
 import { fetchBooksThunk, delBookThunk } from '../../../features/books/bookSlice'
 import { UpdateBookForm } from '../Forms/UpdateBookForm'
@@ -15,12 +13,8 @@ import NewBookForm from '../Forms/NewBookForm'
 
 import './AdminBooks.css'
 
-function preventDefault(event: React.MouseEvent) {
-  event.preventDefault()
-}
-
 export default function Books() {
-  const [sortedBy, setSortedBy] = React.useState('lastBorrowerId')
+  const [sortedBy, setSortedBy] = useState('title')
   const { books } = useSelector((state: RootState) => state.books)
   const [updatedBookIsbn, setUpdatedBookIsbn] = useState<string | null>(null)
   const bookToBeUpdated = books.find((book) => book.isbn === updatedBookIsbn)
@@ -41,12 +35,7 @@ export default function Books() {
     })
   } else if (sortedBy === 'isbn') {
     sortedBooks = [...books].sort((a, b) => a.isbn.localeCompare(b.isbn))
-  } else if (sortedBy === 'lastBorrowerId') {
-    sortedBooks = [...books].sort((a, b) => {
-      return a.borrowerId && b.borrowerId ? a.borrowerId.localeCompare(b.borrowerId) : 0
-    })
   }
-
   const handleUpdateBook = (isbn: string) => {
     setUpdatedBookIsbn(isbn)
   }
@@ -54,7 +43,7 @@ export default function Books() {
     setAddNewBook((prev) => !prev)
   }
   return (
-    <React.Fragment>
+    <Fragment>
       <div className="admintitle">
         <IconButton sx={{ color: 'green' }} onClick={() => handleAddNewBook()}>
           <AddCircleIcon fontSize="large" />
@@ -82,7 +71,7 @@ export default function Books() {
           {sortedBooks.map((book) => (
             <TableRow key={book.isbn}>
               <TableCell>{book.title}</TableCell>
-              <TableCell>{book.authors}</TableCell>
+              <TableCell>{book.authors.map((author) => author['name'])}</TableCell>
               <TableCell>{book.isbn}</TableCell>
               <TableCell sx={{ display: 'flex' }}>
                 <IconButton sx={{ color: 'goldenrod' }} onClick={() => handleUpdateBook(book.isbn)}>
@@ -96,9 +85,6 @@ export default function Books() {
           ))}
         </TableBody>
       </Table>
-      <Link color="primary" to="#" onClick={preventDefault}>
-        See more Books
-      </Link>
-    </React.Fragment>
+    </Fragment>
   )
 }

@@ -1,7 +1,3 @@
-import { useState } from 'react'
-import { useSelector } from 'react-redux'
-import { Navigate, Link } from 'react-router-dom'
-
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 import {
@@ -9,16 +5,18 @@ import {
   Button,
   CssBaseline,
   TextField,
-  Grid,
   Box,
   Avatar,
   Container,
   Typography
 } from '@mui/material'
+import { useState } from 'react'
+import { Role, User } from '../../features/types'
+import { Link, Navigate } from 'react-router-dom'
+import { useAppDispatch } from '../../store'
+import { signUpUsersThunk } from '../../features/authentication/authSlice'
 
-import { useAppDispatch, RootState } from '../../store'
-import { loginUsersThunk } from '../../features/authentication/authSlice'
-import { Role, AuthUser } from '../../features/types'
+const theme = createTheme()
 
 function Copyright() {
   return (
@@ -33,25 +31,35 @@ function Copyright() {
   )
 }
 
-const theme = createTheme()
-
-export default function SignIn() {
-  const [user, setUser] = useState<Partial<AuthUser> | undefined>()
-  const { error, logedInUser } = useSelector((state: RootState) => state.authentication)
+export default function SignUp() {
+  const [user, setUser] = useState<Partial<User> | undefined>()
+  const [error, setError] = useState<string | null>()
+  const [message, setMessage] = useState<string | null>()
   const dispatch = useAppDispatch()
-  if (logedInUser && logedInUser.role === Role.USER) {
-    return <Navigate to="/dashboard" />
-  }
-  if (logedInUser && logedInUser.role === Role.ADMIN) {
-    return <Navigate to="/admin-panel" />
-  }
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    const newUser: AuthUser = {
-      username: user?.username ?? '',
-      password: user?.password ?? ''
+    if (user?.password !== user?.confirmPassword) {
+      return setError('Password does not match')
     }
-    dispatch(loginUsersThunk(newUser))
+    console.log(user)
+    const newUser: User = {
+      username: user?.username ?? '',
+      password: user?.password ?? '',
+      firstName: user?.firstName ?? '',
+      lastName: user?.lastName ?? '',
+      confirmPassword: user?.confirmPassword ?? '',
+      borrowedBooks: [],
+      role: Role.USER,
+      isAuthenticated: false,
+      error: null,
+      id: null
+    }
+    dispatch(signUpUsersThunk(newUser))
+    setMessage('Successful ')
+  }
+  if (message) {
+    return <Navigate to="/signin" />
   }
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target
@@ -69,11 +77,12 @@ export default function SignIn() {
             alignItems: 'center'
           }}>
           {error && <Alert severity="error">{error}</Alert>}
+          {message && <Alert severity="success">{message}</Alert>}
           <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Sign in
+            Join us !
           </Typography>
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
             <TextField
@@ -81,11 +90,30 @@ export default function SignIn() {
               required
               fullWidth
               id="username"
-              label="Username"
+              label="Email"
               name="username"
               autoFocus
               onChange={handleChange}
-              // onChange={(e) => setUsername(e.target.value)}
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="firstName"
+              label="First Name"
+              name="firstName"
+              autoFocus
+              onChange={handleChange}
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="lastName"
+              label="Last Name"
+              name="lastName"
+              autoFocus
+              onChange={handleChange}
             />
             <TextField
               margin="normal"
@@ -98,19 +126,20 @@ export default function SignIn() {
               autoComplete="current-password"
               onChange={handleChange}
             />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="confirmPassword"
+              label="Confirm Password"
+              type="password"
+              id="confirmPassword"
+              autoComplete="current-password"
+              onChange={handleChange}
+            />
             <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
-              Sign In
+              Sign Up
             </Button>
-            <Grid container>
-              <Grid item xs>
-                <Link to="#">Forgot password?</Link>
-              </Grid>
-            </Grid>
-            <Grid container>
-              <Grid item xs>
-                <Link to="/signup">New user ?</Link>
-              </Grid>
-            </Grid>
           </Box>
         </Box>
         <Copyright />

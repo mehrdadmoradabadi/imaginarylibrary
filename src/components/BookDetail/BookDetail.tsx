@@ -3,29 +3,33 @@ import { useParams } from 'react-router-dom'
 import { Book } from '../../features/types'
 import { Typography, Paper, Grid, Button } from '@mui/material/'
 
-import { addToCartThunk } from '../../features/cart/cartSlice'
 import { useAppDispatch, RootState } from '../../store'
+import { borrowBookThunk } from '../../features/books/bookSlice'
 
 import './BookDetail.css'
 import { useSelector } from 'react-redux'
 
 export default function BookDetail() {
   const { id } = useParams<string>()
-  const [isBorrowed, setisBorrowed] = useState<boolean>(false)
   const dispatch = useAppDispatch()
   const data = useSelector((state: RootState) => state.books)
+  const userId = useSelector((state: RootState) => state.authentication.logedInUser?.user_id) || 0
   const [book, setBook] = useState<Book | undefined>()
   const books: Book[] = data.books
+  const [isBorrowed, setIsBorrowed] = useState<boolean>()
   const filteredBook = books.find((book: Book) => book.isbn === id)
   useEffect(() => {
     setBook(filteredBook)
-  }, [id, isBorrowed])
+    setIsBorrowed(book?.status === 'unavailable')
+  }, [id, isBorrowed, handleBorrow])
   if (!book) {
     return <div>Loading...</div>
   }
-  function handleBorrow(bookISBN: string) {
-    setisBorrowed(true)
-    dispatch(addToCartThunk(bookISBN))
+  function handleBorrow(bookISBN: number) {
+    setIsBorrowed(true)
+    if (book) {
+      dispatch(borrowBookThunk({ userId: userId, bookId: bookISBN }))
+    }
   }
   return (
     <>
@@ -55,13 +59,16 @@ export default function BookDetail() {
               marginLeft: '5%'
             }}>
             <Typography variant="subtitle1" color="textSecondary" gutterBottom>
-              Author: {book.authors}
+              Author: {'  '}
+              {book.authors.map((author) => (
+                <span key={author.id}>{author.name}</span>
+              ))}
             </Typography>
             <Typography variant="body1" gutterBottom>
               {book.description}
             </Typography>
             <Typography variant="body2" color="textSecondary" gutterBottom>
-              PublishedDate: {book.publishedDate}
+              PublishedDate: {book.publishedDate?.split('T')[0]}
             </Typography>
             <Typography variant="body2" color="textSecondary" gutterBottom>
               Genre: {book.genre}
@@ -76,7 +83,7 @@ export default function BookDetail() {
               variant="contained"
               color="primary"
               disabled={isBorrowed}
-              onClick={() => handleBorrow(book.isbn)}>
+              onClick={() => handleBorrow(Number(book.isbn))}>
               Borrow
             </Button>
           </Grid>

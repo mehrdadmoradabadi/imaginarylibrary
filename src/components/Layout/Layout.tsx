@@ -1,15 +1,20 @@
-import { ReactNode } from 'react'
+import { ReactNode, useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { RootState } from '../../store'
+import { RootState, useAppDispatch } from '../../store'
 import { Navigate } from 'react-router-dom'
 import { useLocation } from 'react-router-dom'
 
 import Header from './Header'
 import Footer from './Footer'
+import { loadUsersFromStorage } from '../../features/authentication/authSlice'
 
 export default function Layout({ children }: { children: ReactNode }) {
-  const isAuthenticated = useSelector((state: RootState) => state.authentication.isAuthenticated)
   const currentLocation = useLocation()
+  const dispatch = useAppDispatch()
+  useEffect(() => {
+    dispatch(loadUsersFromStorage())
+  }, [])
+  const logedInUser = useSelector((state: RootState) => state.authentication.logedInUser)
   const sections = [
     { title: 'Fantasy' },
     { title: 'Horror' },
@@ -17,12 +22,12 @@ export default function Layout({ children }: { children: ReactNode }) {
     { title: 'Romance' },
     { title: 'Thriller' }
   ]
-  if (!isAuthenticated && currentLocation.pathname !== '/') {
+  if (!logedInUser && currentLocation.pathname !== '/') {
     return <Navigate to={'/'} />
   }
   return (
     <div>
-      {isAuthenticated ? (
+      {logedInUser ? (
         <Header title="Imaginary Library" sections={sections} />
       ) : (
         <Header title="Imaginary Library" sections={[]} />

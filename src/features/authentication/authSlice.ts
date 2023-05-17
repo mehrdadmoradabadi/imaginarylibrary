@@ -1,89 +1,106 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { User, Role } from '../types'
+import { Role, AuthUser, DecodedUser, User } from '../types'
+import jwt_Decode from 'jwt-decode'
+import { getDecodedTokenFromStorage } from '../../utils/token'
 
 export interface AllUsersState {
-  users: User[]
-  error: null | string
-  username: string | null
-  isAuthenticated: boolean
-  role: Role | null
-  borrowedBook: string[] | null
-  id: string | null
+  logedInUser: DecodedUser | null
+  error: string | null
 }
 const initialState: AllUsersState = {
-  users: [],
-  error: null,
-  username: '',
-  isAuthenticated: false,
-  role: Role.USER,
-  borrowedBook: [],
-  id: null
+  logedInUser: {
+    username: '',
+    user_id: 0,
+    role: Role.USER
+  },
+  error: null
 }
 
 export const logoutUserThunk = createAsyncThunk('user/logout', async () => {
   return {}
 })
-export const loginUsersThunk = createAsyncThunk('users/fetch', async (propUser: User) => {
-  const userResponse = await fetch('/users.json')
-  const users = await userResponse.json()
-  const foundUser = users.find(
-    (user: User) => user.username === propUser.username && user.password === propUser.password
-  )
-  if (foundUser) {
+export const loginUsersThunk = createAsyncThunk('users/login', async (propUser: AuthUser) => {
+  const response = await fetch(`http://localhost:8080/api/v1/auth/login`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ username: propUser.username, password: propUser.password })
+  })
+  const token = await response.text()
+  if (token == '') {
     return {
-      username: foundUser.username,
-      role: foundUser.type,
-      borrowedBooks: foundUser.borrowedBook,
-      error: null,
-      isAuthenticated: true,
-      id: foundUser.id
+      isAuthenticated: false,
+      error: 'Wrong Username or Password!',
+      token: null
     }
   }
   return {
-    username: null,
-    error: 'Wrong Username or Password!',
-    isAuthenticated: false
+    isAuthenticated: true,
+    token: token,
+    error: null
+  }
+})
+export const signUpUsersThunk = createAsyncThunk('users/signup', async (propUser: User) => {
+  console.log('new USer: ', propUser)
+  const response = await fetch(`http://localhost:8080/api/v1/auth/signup`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      username: propUser.username,
+      password: propUser.password,
+      firstName: propUser.firstName,
+      lastName: propUser.lastName,
+      role: propUser.role,
+      borrowedBooks: []
+    })
+  })
+  const newUser = await response.text()
+  return {
+    newUser,
+    error: null
   }
 })
 
 export const authSlice = createSlice({
   name: 'user',
   initialState,
-  reducers: {},
+  reducers: {
+    loadUsersFromStorage: (state) => {
+      const user = getDecodedTokenFromStorage()
+      if (user) {
+        state.logedInUser = user
+      }
+    }
+  },
   extraReducers: (builder) => {
     builder.addCase(loginUsersThunk.fulfilled, (state, action) => {
+      const token = action.payload.token
+      if (token) {
+        localStorage.setItem('token', token)
+        const decodeduser: DecodedUser = jwt_Decode(token)
+        state.logedInUser = decodeduser
+      }
       state.error = action.payload.error
-      state.username = action.payload.username
-      state.isAuthenticated = action.payload.isAuthenticated
-      state.role = action.payload.role
-      state.id = action.payload.id
-      localStorage.setItem('isAuthenticated', action.payload.isAuthenticated ? 'true' : 'false')
-      localStorage.setItem('role', action.payload.role)
-      localStorage.setItem(
-        'borrowedBooks',
-        action.payload.borrowedBooks === null || action.payload.borrowedBooks === undefined
-          ? '[]'
-          : JSON.stringify(action.payload.borrowedBooks)
-      )
-      localStorage.setItem('id', action.payload.id)
     })
     builder.addCase(loginUsersThunk.rejected, (state) => {
       state.error = 'something went wrong'
     })
     builder.addCase(logoutUserThunk.fulfilled, (state) => {
       state.error = null
-      state.username = null
-      state.isAuthenticated = false
-      state.role = null
-      localStorage.removeItem('isAuthenticated')
-      localStorage.removeItem('role')
-      localStorage.removeItem('borrowedBooks')
-      localStorage.removeItem('id')
+      state.logedInUser = null
+      localStorage.removeItem('token')
     })
     builder.addCase(logoutUserThunk.rejected, (state) => {
       state.error = 'something went wrong'
     })
+    builder.addCase(signUpUsersThunk.fulfilled, (state, action) => {
+      console.log(action.payload.newUser)
+    })
   }
 })
+export const { loadUsersFromStorage } = authSlice.actions
 
 export default authSlice.reducer

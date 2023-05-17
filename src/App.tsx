@@ -8,6 +8,7 @@ import UserCart from './components/UserCart/UserCart'
 import Dashboard from './components/AdminPanel/Dashboard'
 import Layout from './components/Layout/Layout'
 import Category from './components/Category/Category'
+import SignUp from './components/SignIn/SignUp'
 import './App.css'
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
         <Routes>
           <Route path="/signin" element={<SignIn />} />
           <Route path="/admin-panel" element={<Dashboard />} />
+          <Route path="/signup" element={<SignUp />} />
           <Route
             path="/"
             element={

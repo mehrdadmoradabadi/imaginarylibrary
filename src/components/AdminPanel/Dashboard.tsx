@@ -32,13 +32,15 @@ import { Link } from 'react-router-dom'
 import Books from './Books/AdminBooks'
 import { useAppDispatch } from '../../store'
 import { logoutUserThunk } from '../../features/authentication/authSlice'
+import BorrowedBooks from './BorrowedBooks/BorrowedBooks'
+import Authors from './Authors/Authors'
 
 function Copyright() {
   return (
     <Typography variant="body2" color="text.secondary" align="center" sx={{ pt: 4 }}>
       {'Copyright © '}
       <Link color="inherit" to="https://mui.com/">
-        Your Website
+        Imaginary library
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -99,6 +101,7 @@ const mdTheme = createTheme()
 
 function DashboardContent() {
   const [open, setOpen] = React.useState(true)
+  const [selectedTopic, setSelectedTopic] = React.useState<string | null>('books')
   const toggleDrawer = () => {
     setOpen(!open)
   }
@@ -159,23 +162,23 @@ function DashboardContent() {
           <Divider />
           <List component="nav">
             <React.Fragment>
-              <ListItemButton>
+              <ListItemButton onClick={() => setSelectedTopic('books')}>
                 <ListItemIcon>
                   <DashboardIcon />
                 </ListItemIcon>
-                <ListItemText primary="Dashboard" />
+                <ListItemText primary="Books" />
               </ListItemButton>
-              <ListItemButton>
+              <ListItemButton onClick={() => setSelectedTopic('borrowedBooks')}>
                 <ListItemIcon>
                   <ShoppingCartIcon />
                 </ListItemIcon>
                 <ListItemText primary="Borrowed books" />
               </ListItemButton>
-              <ListItemButton>
+              <ListItemButton onClick={() => setSelectedTopic('authors')}>
                 <ListItemIcon>
                   <PeopleIcon />
                 </ListItemIcon>
-                <ListItemText primary="Customers" />
+                <ListItemText primary="Authors" />
               </ListItemButton>
             </React.Fragment>
           </List>
@@ -194,7 +197,9 @@ function DashboardContent() {
             <Grid container spacing={3}>
               <Grid item xs={12}>
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                  <Books />
+                  {selectedTopic === 'books' && <Books />}
+                  {selectedTopic === 'borrowedBooks' && <BorrowedBooks />}
+                  {selectedTopic === 'authors' && <Authors />}
                 </Paper>
               </Grid>
             </Grid>

@@ -3,11 +3,13 @@ import signInReducer from './features/authentication/authSlice'
 import { useDispatch } from 'react-redux'
 import bookReducer from './features/books/bookSlice'
 import cartReducer from './features/cart/cartSlice'
+import authrerReducer from './features/authors/authorsSlice'
 export const store = configureStore({
   reducer: {
     authentication: signInReducer,
     books: bookReducer,
-    cart: cartReducer
+    cart: cartReducer,
+    authors: authrerReducer
   }
 })
 

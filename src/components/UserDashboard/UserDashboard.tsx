@@ -129,7 +129,6 @@ export default function UserDashboard() {
                       {bookChild.description}
                     </Typography>
                   </CardContent>
-                  {/* <CardActions></CardActions> */}
                   <Typography sx={{ color: '#5858a5' }}>Read More & Borrow</Typography>
                 </Link>
               </CardActionArea>

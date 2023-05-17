@@ -22,19 +22,21 @@ import { fetchCartItemsThunk, removeFromCartThunk } from '../../features/cart/ca
 import { RootState, useAppDispatch } from '../../store'
 
 const UserCart = () => {
-  const { books, error, isbn } = useSelector((state: RootState) => state.cart)
+  const { books, error } = useSelector((state: RootState) => state.cart)
+  const userId = useSelector((state: RootState) => state.authentication.logedInUser?.user_id) || 0
   const dispatch = useAppDispatch()
   useEffect(() => {
-    dispatch(fetchCartItemsThunk())
+    dispatch(fetchCartItemsThunk(userId))
   }, [])
 
-  const handleDelete = (id: string) => {
-    dispatch(removeFromCartThunk(id))
+  const handleDelete = (bookISBN: number) => {
+    dispatch(removeFromCartThunk({ userId: userId, bookId: bookISBN }))
   }
+
   return (
     <Box sx={{ p: 2 }}>
       <Typography variant="h5">Library Cart</Typography>
-      {isbn.length !== 0 ? (
+      {books.length !== 0 ? (
         <>
           {error && { error }}
           <List className="container">
@@ -56,7 +58,9 @@ const UserCart = () => {
                         <Typography variant="subtitle2" color="text.secondary">
                           Borrowed at:
                         </Typography>
-                        <Typography variant="subtitle2">{item.borrowDate}</Typography>
+                        <Typography variant="subtitle2">
+                          {item.borrowDate?.split('T')[0]}
+                        </Typography>
                       </>
                     }
                   />
@@ -64,7 +68,7 @@ const UserCart = () => {
                     <IconButton
                       edge="end"
                       aria-label="delete"
-                      onClick={() => handleDelete(item.isbn)}>
+                      onClick={() => handleDelete(Number(item.isbn))}>
                       <DeleteIcon />
                     </IconButton>
                   </ListItemSecondaryAction>

@@ -2,8 +2,8 @@ import { Badge, Button, IconButton, Toolbar, Typography } from '@mui/material'
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 
-import * as React from 'react'
-import { useEffect, useState } from 'react'
+import { Fragment } from 'react'
+
 import { useNavigate, Link } from 'react-router-dom'
 
 import { logoutUserThunk } from '../../features/authentication/authSlice'
@@ -13,24 +13,20 @@ import { useSelector } from 'react-redux'
 
 export default function Header(props: HeaderProps) {
   const { sections, title } = props
-  const [cartitems, setCartitems] = useState<number>(0)
-  const isAuthenticated = useSelector((state: RootState) => state.authentication.isAuthenticated)
+  const logedInUser = useSelector((state: RootState) => state.authentication.logedInUser)
   const dispatch = useAppDispatch()
   let borrowedBooks = JSON.parse(localStorage.getItem('borrowedBooks') || 'null')
 
   if (!borrowedBooks) {
     borrowedBooks = []
   }
-  useEffect(() => {
-    setCartitems(borrowedBooks.length)
-  }, [borrowedBooks])
   function handleSignout() {
     dispatch(logoutUserThunk())
   }
   const navigate = useNavigate()
 
   return (
-    <React.Fragment>
+    <Fragment>
       <Toolbar sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <IconButton onClick={() => navigate(-1)} sx={{ mr: 2, color: '#656363' }}>
           <ArrowBackIcon />
@@ -45,13 +41,13 @@ export default function Header(props: HeaderProps) {
           {title}
         </Typography>
 
-        {isAuthenticated ? (
-          <React.Fragment>
+        {logedInUser ? (
+          <Fragment>
             <IconButton
               component={Link}
               to="/user-cart"
               sx={{ marginRight: '2%', color: '#656363' }}>
-              <Badge badgeContent={cartitems} color="secondary">
+              <Badge color="secondary">
                 <ShoppingCartIcon />
               </Badge>
             </IconButton>
@@ -64,7 +60,7 @@ export default function Header(props: HeaderProps) {
               component={Link}>
               Sign out
             </Button>
-          </React.Fragment>
+          </Fragment>
         ) : (
           <Button variant="outlined" size="small" component={Link} to={'/signin'}>
             Sign in
@@ -84,6 +80,6 @@ export default function Header(props: HeaderProps) {
           </Link>
         ))}
       </Toolbar>
-    </React.Fragment>
+    </Fragment>
   )
 }
