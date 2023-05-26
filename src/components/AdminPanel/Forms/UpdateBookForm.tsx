@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Book } from '../../../features/types'
 import { useAppDispatch } from '../../../store'
-import { updateBooksThunk } from '../../../features/books/bookSlice'
+import { updateBooksThunk, uploadBookCoverThunk } from '../../../features/books/bookSlice'
 
 import {
   Button,
@@ -10,6 +10,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Input,
   TextField
 } from '@mui/material'
 
@@ -29,6 +30,13 @@ export function UpdateBookForm({ book }: { book: Book }) {
       [name]: value
     }))
   }
+  const handleCoverUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      dispatch(uploadBookCoverThunk({ bookIsbn: Number(state.isbn), bookImage: file }))
+    }
+  }
+
   return (
     <div>
       <Dialog
@@ -60,6 +68,8 @@ export function UpdateBookForm({ book }: { book: Book }) {
             value={state.description}
             onChange={handleChange}
           />
+          <DialogContentText id="cover"> Cover:</DialogContentText>
+          <Input type="file" onChange={handleCoverUpload} />
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpen(false)}>Cancle</Button>

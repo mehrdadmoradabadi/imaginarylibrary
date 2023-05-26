@@ -78,12 +78,13 @@ export default function UserDashboard() {
 
   let skip = (page - 1) * 9
   const end = skip + 9 - 1
+  skip = skip == 0 ? 0 : skip - 1
   const booklist = books.slice(skip, end)
 
   if (end > books.length) {
     skip -= 1
   }
-
+  console.log(books)
   return (
     <>
       <Toolbar component="nav" variant="dense" sx={{ backgroundColor: '#d8d8d8' }}>
@@ -112,10 +113,11 @@ export default function UserDashboard() {
                   style={{ textDecoration: 'none', color: 'black' }}>
                   <CardMedia
                     component="img"
-                    height="100%"
-                    width="100%"
-                    image="/book.jpg"
+                    height="500px"
+                    width="100px"
+                    image={bookChild.imageUrl}
                     alt={bookChild.title}
+                    sx={{ objectFit: 'cover' }}
                   />
                   <CardContent>
                     <Typography gutterBottom variant="h5" component="div">

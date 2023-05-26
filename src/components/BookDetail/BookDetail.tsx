@@ -42,7 +42,7 @@ export default function BookDetail() {
             item
             className="container"
             sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start' }}>
-            <img className="cover" alt={`${book.title} cover`} src="/book.jpg" />
+            <img className="cover" alt={`${book.title} cover`} src={book.imageUrl} />
             <div className="title">
               <Typography variant="h5" gutterBottom>
                 {book.title}

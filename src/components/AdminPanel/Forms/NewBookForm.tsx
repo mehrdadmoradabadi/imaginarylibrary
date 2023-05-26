@@ -1,7 +1,8 @@
 import { Book, Status } from '../../../features/types'
-import { addBookThunk } from '../../../features/books/bookSlice'
+import { addBookThunk, uploadBookCoverThunk } from '../../../features/books/bookSlice'
 import { useAppDispatch } from '../../../store'
 import { useState } from 'react'
+import Input from '@mui/material/Input'
 
 import {
   Button,
@@ -17,7 +18,7 @@ export default function NewBookForm() {
   const [open, setOpen] = useState(true)
 
   const dispatch = useAppDispatch()
-  const [newBook, setNewBook] = useState<Partial<Book> | undefined>()
+  const [newBook, setNewBook] = useState<Partial<Book>>({})
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value, name } = e.target
@@ -40,13 +41,19 @@ export default function NewBookForm() {
         url: `/${newBook.isbn}`,
         genre: newBook?.genre ?? '',
         title: newBook.title,
-        description: newBook.description
+        description: newBook.description,
+        imageUrl: newBook.imageUrl ?? ''
       }
       dispatch(addBookThunk(book))
       setOpen(false)
     }
   }
-
+  const handleCoverUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      dispatch(uploadBookCoverThunk({ bookIsbn: Number(newBook.isbn), bookImage: file }))
+    }
+  }
   return (
     <div>
       <Dialog
@@ -133,6 +140,8 @@ export default function NewBookForm() {
             placeholder="Genre"
             onChange={handleChange}
           />
+          <DialogContentText id="cover"> Cover:</DialogContentText>
+          <Input type="file" onChange={handleCoverUpload} />
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpen(false)}>Cancle</Button>

@@ -23,7 +23,8 @@ import {
   ThemeProvider,
   Button
 } from '@mui/material/'
-import DashboardIcon from '@mui/icons-material/Dashboard'
+import LocalLibraryIcon from '@mui/icons-material/LocalLibrary'
+import BadgeIcon from '@mui/icons-material/Badge'
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'
 import PeopleIcon from '@mui/icons-material/People'
 
@@ -34,6 +35,7 @@ import { useAppDispatch } from '../../store'
 import { logoutUserThunk } from '../../features/authentication/authSlice'
 import BorrowedBooks from './BorrowedBooks/BorrowedBooks'
 import Authors from './Authors/Authors'
+import Users from './Users/Users'
 
 function Copyright() {
   return (
@@ -164,7 +166,7 @@ function DashboardContent() {
             <React.Fragment>
               <ListItemButton onClick={() => setSelectedTopic('books')}>
                 <ListItemIcon>
-                  <DashboardIcon />
+                  <LocalLibraryIcon />
                 </ListItemIcon>
                 <ListItemText primary="Books" />
               </ListItemButton>
@@ -179,6 +181,12 @@ function DashboardContent() {
                   <PeopleIcon />
                 </ListItemIcon>
                 <ListItemText primary="Authors" />
+              </ListItemButton>
+              <ListItemButton onClick={() => setSelectedTopic('users')}>
+                <ListItemIcon>
+                  <BadgeIcon />
+                </ListItemIcon>
+                <ListItemText primary="Users" />
               </ListItemButton>
             </React.Fragment>
           </List>
@@ -200,6 +208,7 @@ function DashboardContent() {
                   {selectedTopic === 'books' && <Books />}
                   {selectedTopic === 'borrowedBooks' && <BorrowedBooks />}
                   {selectedTopic === 'authors' && <Authors />}
+                  {selectedTopic === 'users' && <Users />}
                 </Paper>
               </Grid>
             </Grid>

@@ -45,7 +45,7 @@ export default function Category() {
                     component="img"
                     height="100%"
                     width="100%"
-                    image="/book.jpg"
+                    image={bookChild.imageUrl}
                     alt={bookChild.title}
                   />
                   <CardContent>

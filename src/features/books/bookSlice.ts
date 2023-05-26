@@ -11,6 +11,24 @@ const initialState: BooksState = {
   error: null
 }
 
+export const uploadBookCoverThunk = createAsyncThunk(
+  'books/cover',
+  async ({ bookIsbn, bookImage }: { bookIsbn: number; bookImage: File }) => {
+    const token = localStorage.getItem('token')
+    const formData = new FormData()
+    formData.append('cover', bookImage)
+    const response = await fetch(`http://localhost:8080/api/v1/admin/book/img/${bookIsbn}`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
+      body: formData
+    })
+    const data = await response.json()
+    console.log('datais :', data)
+  }
+)
+
 export const fetchBooksThunk = createAsyncThunk('books/fetch', async () => {
   const token = localStorage.getItem('token')
   const response = await fetch(`http://localhost:8080/api/v1/books`, {

@@ -53,7 +53,7 @@ export default function SignUp() {
       role: Role.USER,
       isAuthenticated: false,
       error: null,
-      id: null
+      userId: null
     }
     dispatch(signUpUsersThunk(newUser))
     setMessage('Successful ')
@@ -102,7 +102,6 @@ export default function SignUp() {
               id="firstName"
               label="First Name"
               name="firstName"
-              autoFocus
               onChange={handleChange}
             />
             <TextField
@@ -112,7 +111,6 @@ export default function SignUp() {
               id="lastName"
               label="Last Name"
               name="lastName"
-              autoFocus
               onChange={handleChange}
             />
             <TextField

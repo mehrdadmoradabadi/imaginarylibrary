@@ -11,8 +11,8 @@ export interface User {
   lastName: string | null
   isAuthenticated: boolean
   error: string | null
-  role: Role | null
-  id: string | null
+  role: Role | '' | undefined
+  userId: string | null
   borrowedBooks: string[] | null
 }
 export interface AuthUser {
@@ -41,6 +41,7 @@ export interface Book {
   returnDate: string | null
   url: string
   genre: string
+  imageUrl: string
 }
 export interface Authors {
   id: number

@@ -45,10 +45,15 @@ const UserCart = () => {
                 <ListItem alignItems="center">
                   <ListItemAvatar>
                     <img
-                      src="/book.jpg"
+                      src={item.imageUrl}
                       alt={item.title}
                       className="item-cover"
-                      style={{ borderRadius: 8, width: '200px', marginRight: '50px' }}
+                      style={{
+                        borderRadius: 8,
+                        width: '100px',
+                        marginRight: '50px',
+                        objectFit: 'cover'
+                      }}
                     />
                   </ListItemAvatar>
                   <ListItemText
