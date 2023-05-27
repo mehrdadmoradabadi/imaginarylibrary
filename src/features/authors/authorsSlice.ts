@@ -13,7 +13,7 @@ const initialState: AuthorState = {
 
 export const fetchAllAuthorsThunk = createAsyncThunk('authors/fetch', async () => {
   const token = localStorage.getItem('token')
-  const response = await fetch(`http://localhost:8080/api/v1/admin/authors`, {
+  const response = await fetch(`https://imaginarylibrary.onrender.com/api/v1/admin/authors`, {
     headers: {
       Authorization: `Bearer ${token}`
     }
@@ -27,7 +27,7 @@ export const fetchAllAuthorsThunk = createAsyncThunk('authors/fetch', async () =
 })
 export const deleteAuthorsThunk = createAsyncThunk('authors/delete', async (id: number) => {
   const token = localStorage.getItem('token')
-  await fetch(`http://localhost:8080/api/v1/admin/authors/${id}`, {
+  await fetch(`https://imaginarylibrary.onrender.com/api/v1/admin/authors/${id}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
@@ -41,7 +41,7 @@ export const deleteAuthorsThunk = createAsyncThunk('authors/delete', async (id: 
 })
 export const addAuthorsThunk = createAsyncThunk('authors/add', async (newAuthor: Author) => {
   const token = localStorage.getItem('token')
-  const response = await fetch(`http://localhost:8080/api/v1/admin/authors`, {
+  const response = await fetch(`https://imaginarylibrary.onrender.com/api/v1/admin/authors`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -59,14 +59,17 @@ export const updateAuthorsThunk = createAsyncThunk(
   'authors/update',
   async (updatedAuthor: Author) => {
     const token = localStorage.getItem('token')
-    const response = await fetch(`http://localhost:8080/api/v1/admin/authors/${updatedAuthor.id}`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`
-      },
-      body: JSON.stringify(updatedAuthor)
-    })
+    const response = await fetch(
+      `https://imaginarylibrary.onrender.com/api/v1/admin/authors/${updatedAuthor.id}`,
+      {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(updatedAuthor)
+      }
+    )
     const data = await response.json()
     return {
       data,

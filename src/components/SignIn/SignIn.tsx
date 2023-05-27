@@ -24,7 +24,7 @@ function Copyright() {
   return (
     <Typography variant="body2" color="text.secondary" align="center" sx={{ mt: 8, mb: 4 }}>
       {'Copyright © '}
-      <Link color="inherit" to="https://localhost:5173/">
+      <Link color="inherit" to="https://imaginarylibrary.netlify.app/">
         Imaginary library
       </Link>{' '}
       {new Date().getFullYear()}

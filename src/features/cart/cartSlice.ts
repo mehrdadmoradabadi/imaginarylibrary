@@ -17,11 +17,14 @@ const initialState: CartState = {
 }
 export const fetchCartItemsThunk = createAsyncThunk('cart/fetch', async (userId: number) => {
   const token = localStorage.getItem('token')
-  const response = await fetch(`http://localhost:8080/api/v1/books/borrow/${userId}`, {
-    headers: {
-      Authorization: `Bearer ${token}`
+  const response = await fetch(
+    `https://imaginarylibrary.onrender.com/api/v1/books/borrow/${userId}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
     }
-  })
+  )
   const data = await response.json()
   return {
     data,
@@ -33,11 +36,14 @@ export const removeFromCartThunk = createAsyncThunk(
   'cart/remove',
   async ({ userId, bookId }: { userId: number; bookId: number }) => {
     const token = localStorage.getItem('token')
-    const response = await fetch(`http://localhost:8080/api/v1/books/borrow/${bookId}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-      body: JSON.stringify({ userId: userId })
-    })
+    const response = await fetch(
+      `https://imaginarylibrary.onrender.com/api/v1/books/borrow/${bookId}`,
+      {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ userId: userId })
+      }
+    )
     const data = await response.json()
     return {
       data,

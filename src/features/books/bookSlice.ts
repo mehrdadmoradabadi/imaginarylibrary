@@ -17,13 +17,16 @@ export const uploadBookCoverThunk = createAsyncThunk(
     const token = localStorage.getItem('token')
     const formData = new FormData()
     formData.append('cover', bookImage)
-    const response = await fetch(`http://localhost:8080/api/v1/admin/book/img/${bookIsbn}`, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token}`
-      },
-      body: formData
-    })
+    const response = await fetch(
+      `https://imaginarylibrary.onrender.com/api/v1/admin/book/img/${bookIsbn}`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
+        body: formData
+      }
+    )
     const data = await response.json()
     console.log('datais :', data)
   }
@@ -31,7 +34,7 @@ export const uploadBookCoverThunk = createAsyncThunk(
 
 export const fetchBooksThunk = createAsyncThunk('books/fetch', async () => {
   const token = localStorage.getItem('token')
-  const response = await fetch(`http://localhost:8080/api/v1/books`, {
+  const response = await fetch(`https://imaginarylibrary.onrender.com/api/v1/books`, {
     headers: {
       Authorization: `Bearer ${token}`
     }
@@ -47,7 +50,7 @@ export const fetchBooksThunk = createAsyncThunk('books/fetch', async () => {
 
 export const fetchBooksByIdThunk = createAsyncThunk('books/fetchById', async (id: string) => {
   const token = localStorage.getItem('token')
-  const response = await fetch(`http://localhost:8080/api/v1/books/${id}`, {
+  const response = await fetch(`https://imaginarylibrary.onrender.com/api/v1/books/${id}`, {
     headers: {
       Authorization: `Bearer ${token}`
     }
@@ -62,7 +65,7 @@ export const fetchBooksByIdThunk = createAsyncThunk('books/fetchById', async (id
 
 export const addBookThunk = createAsyncThunk('books/add', async (newBook: Book) => {
   const token = localStorage.getItem('token')
-  const response = await fetch(`http://localhost:8080/api/v1/admin/book`, {
+  const response = await fetch(`https://imaginarylibrary.onrender.com/api/v1/admin/book`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -106,11 +109,14 @@ export const borrowBookThunk = createAsyncThunk(
   'books/borrow',
   async ({ userId, bookId }: { userId: number; bookId: number }) => {
     const token = localStorage.getItem('token')
-    const response = await fetch(`http://localhost:8080/api/v1/books/borrow/${bookId}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-      body: JSON.stringify({ userId: userId })
-    })
+    const response = await fetch(
+      `https://imaginarylibrary.onrender.com/api/v1/books/borrow/${bookId}`,
+      {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ userId: userId })
+      }
+    )
     const data = await response.json()
     return {
       data,
@@ -121,7 +127,7 @@ export const borrowBookThunk = createAsyncThunk(
 
 export const delBookThunk = createAsyncThunk('books/del', async (isbn: string) => {
   const token = localStorage.getItem('token')
-  const response = await fetch(`http://localhost:8080/api/v1/admin/book/${isbn}`, {
+  const response = await fetch(`https://imaginarylibrary.onrender.com/api/v1/admin/book/${isbn}`, {
     method: 'DELETE',
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }
   })
@@ -135,11 +141,14 @@ export const delBookThunk = createAsyncThunk('books/del', async (isbn: string) =
 export const updateBooksThunk = createAsyncThunk('books/update', async (updatedBook: Book) => {
   const token = localStorage.getItem('token')
   console.log(updatedBook)
-  const response = await fetch(`http://localhost:8080/api/v1/admin/book/${updatedBook.isbn}`, {
-    method: 'PATCH',
-    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-    body: JSON.stringify(updatedBook)
-  })
+  const response = await fetch(
+    `https://imaginarylibrary.onrender.com/api/v1/admin/book/${updatedBook.isbn}`,
+    {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      body: JSON.stringify(updatedBook)
+    }
+  )
   const data = await response.json()
   return {
     book: data,

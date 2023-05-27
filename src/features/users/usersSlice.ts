@@ -12,7 +12,7 @@ const initialState: UserState = {
 
 export const fetchAllUsersThunk = createAsyncThunk('users/fetch', async () => {
   const token = localStorage.getItem('token')
-  const response = await fetch(`http://localhost:8080/api/v1/admin/user`, {
+  const response = await fetch(`https://imaginarylibrary.onrender.com/api/v1/admin/user`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -27,14 +27,17 @@ export const fetchAllUsersThunk = createAsyncThunk('users/fetch', async () => {
 })
 export const updateUserThunk = createAsyncThunk('users/update', async (updatedUser: User) => {
   const token = localStorage.getItem('token')
-  const response = await fetch(`http://localhost:8080/api/v1/admin/user/${updatedUser.userId}`, {
-    method: 'PATCH',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`
-    },
-    body: JSON.stringify(updatedUser)
-  })
+  const response = await fetch(
+    `https://imaginarylibrary.onrender.com/api/v1/admin/user/${updatedUser.userId}`,
+    {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify(updatedUser)
+    }
+  )
   const data = await response.json()
   return {
     user: data,
@@ -43,7 +46,7 @@ export const updateUserThunk = createAsyncThunk('users/update', async (updatedUs
 })
 export const deleteUserThunk = createAsyncThunk('users/delete', async (deletedUser: User) => {
   const token = localStorage.getItem('token')
-  await fetch(`http://localhost:8080/api/v1/admin/user/${deletedUser.userId}`, {
+  await fetch(`https://imaginarylibrary.onrender.com/api/v1/admin/user/${deletedUser.userId}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
