@@ -20,7 +20,7 @@ export const logoutUserThunk = createAsyncThunk('user/logout', async () => {
   return {}
 })
 export const loginUsersThunk = createAsyncThunk('users/login', async (propUser: AuthUser) => {
-  const response = await fetch(`http://localhost:8080/api/v1/auth/login`, {
+  const response = await fetch(`https://imaginarylibrary.onrender.com/api/v1/auth/login`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -43,7 +43,7 @@ export const loginUsersThunk = createAsyncThunk('users/login', async (propUser: 
 })
 export const signUpUsersThunk = createAsyncThunk('users/signup', async (propUser: User) => {
   console.log('new USer: ', propUser)
-  const response = await fetch(`http://localhost:8080/api/v1/auth/signup`, {
+  const response = await fetch(`https://imaginarylibrary.onrender.com/api/v1/auth/signup`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
