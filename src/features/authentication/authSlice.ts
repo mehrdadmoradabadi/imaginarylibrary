@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { Role, AuthUser, DecodedUser, User } from '../types'
+import { AuthUser, DecodedUser, User } from '../types'
 import jwt_Decode from 'jwt-decode'
 import { getDecodedTokenFromStorage } from '../../utils/token'
 
@@ -8,11 +8,7 @@ export interface AllUsersState {
   error: string | null
 }
 const initialState: AllUsersState = {
-  logedInUser: {
-    username: '',
-    user_id: 0,
-    role: Role.USER
-  },
+  logedInUser: null,
   error: null
 }
 

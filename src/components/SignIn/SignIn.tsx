@@ -85,7 +85,6 @@ export default function SignIn() {
               name="username"
               autoFocus
               onChange={handleChange}
-              // onChange={(e) => setUsername(e.target.value)}
             />
             <TextField
               margin="normal"
